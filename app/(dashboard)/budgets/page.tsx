@@ -3,6 +3,7 @@
 import BudgetCard from "@/components/dashboard/BudgetCard";
 import { calculatePercentage, formatCurrency } from "@/lib/utils";
 import { useFinanceStore } from "@/store/useFinanceStore";
+import AnimatedPage from "@/components/shared/AnimatedPage";
 
 export default function BudgetsPage() {
   const { budgets } = useFinanceStore();
@@ -13,6 +14,8 @@ export default function BudgetsPage() {
   const usage = calculatePercentage(totalSpent, totalLimit);
 
   return (
+        <AnimatedPage>
+
     <div className="mx-auto max-w-7xl space-y-6">
       <div>
         <h1 className="text-3xl font-bold">Budgets</h1>
@@ -68,5 +71,7 @@ export default function BudgetsPage() {
         ))}
       </div>
     </div>
+        </AnimatedPage>
+
   );
 }

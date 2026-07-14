@@ -20,6 +20,9 @@ interface FinanceState {
   setFilterCategory: (category: string) => void;
   setFilterType: (type: string) => void;
 
+  addTransaction: (transaction: Transaction) => void;
+  deleteTransaction: (id: string) => void;
+
   getTotalIncome: () => number;
   getTotalExpenses: () => number;
   getNetSavings: () => number;
@@ -40,6 +43,16 @@ export const useFinanceStore = create<FinanceState>()(
       setSearchQuery: (query) => set({ searchQuery: query }),
       setFilterCategory: (category) => set({ filterCategory: category }),
       setFilterType: (type) => set({ filterType: type }),
+
+      addTransaction: (transaction) =>
+        set((state) => ({
+          transactions: [transaction, ...state.transactions],
+        })),
+
+      deleteTransaction: (id) =>
+        set((state) => ({
+          transactions: state.transactions.filter((t) => t.id !== id),
+        })),
 
       getTotalIncome: () =>
         get()

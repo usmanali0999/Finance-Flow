@@ -12,8 +12,11 @@ import StatCard from "@/components/dashboard/StatCard";
 import AccountCard from "@/components/dashboard/AccountCard";
 import BudgetCard from "@/components/dashboard/BudgetCard";
 import TransactionRow from "@/components/transactions/TransactionRow";
+import IncomeExpenseChart from "@/components/charts/IncomeExpenseChart";
+import SpendingBreakdownChart from "@/components/charts/SpendingBreakdownChart";
 import { formatCurrency } from "@/lib/utils";
 import { useFinanceStore } from "@/store/useFinanceStore";
+import AnimatedPage from "@/components/shared/AnimatedPage";
 
 export default function DashboardPage() {
   const {
@@ -70,25 +73,41 @@ export default function DashboardPage() {
   ];
 
   return (
+        <AnimatedPage>
+
     <div className="mx-auto max-w-7xl space-y-8">
-      {/* Header */}
       <div>
         <h1 className="text-3xl font-bold">Dashboard Overview</h1>
         <p className="mt-2 text-sm text-slate-400">
-          Monitor your balances, recent activity, and monthly health.
+          Monitor balances, monthly trends, category distribution, and recent activity.
         </p>
       </div>
 
-      {/* Stats */}
       <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
         {stats.map((item) => (
           <StatCard key={item.title} {...item} />
         ))}
       </div>
 
-      {/* Transactions + Budgets */}
       <div className="grid gap-6 xl:grid-cols-3">
-        {/* Recent Transactions */}
+        <section className="rounded-2xl border border-white/10 bg-slate-900/60 p-5 xl:col-span-2">
+          <div className="mb-5">
+            <h2 className="text-lg font-semibold">Income, Expenses & Savings</h2>
+            <p className="text-sm text-slate-400">6 month financial overview</p>
+          </div>
+          <IncomeExpenseChart />
+        </section>
+
+        <section className="rounded-2xl border border-white/10 bg-slate-900/60 p-5">
+          <div className="mb-5">
+            <h2 className="text-lg font-semibold">Spending Breakdown</h2>
+            <p className="text-sm text-slate-400">Category distribution</p>
+          </div>
+          <SpendingBreakdownChart />
+        </section>
+      </div>
+
+      <div className="grid gap-6 xl:grid-cols-3">
         <section className="rounded-2xl border border-white/10 bg-slate-900/60 p-5 xl:col-span-2">
           <div className="mb-4 flex items-center justify-between">
             <div>
@@ -110,7 +129,6 @@ export default function DashboardPage() {
           </div>
         </section>
 
-        {/* Budget Health */}
         <section className="rounded-2xl border border-white/10 bg-slate-900/60 p-5">
           <div className="mb-4 flex items-center justify-between">
             <div>
@@ -133,7 +151,6 @@ export default function DashboardPage() {
         </section>
       </div>
 
-      {/* Accounts */}
       <section className="rounded-2xl border border-white/10 bg-slate-900/60 p-5">
         <div className="mb-5">
           <h2 className="text-lg font-semibold">Accounts</h2>
@@ -149,5 +166,6 @@ export default function DashboardPage() {
         </div>
       </section>
     </div>
+      </AnimatedPage>
   );
 }

@@ -1,3 +1,6 @@
+"use client";
+
+import { Trash2 } from "lucide-react";
 import type { Transaction } from "@/types";
 import {
   cn,
@@ -6,6 +9,7 @@ import {
   getCategoryIcon,
   getCategoryLabel,
 } from "@/lib/utils";
+import { useFinanceStore } from "@/store/useFinanceStore";
 
 interface TransactionRowProps {
   transaction: Transaction;
@@ -18,16 +22,15 @@ const statusStyles = {
 };
 
 export default function TransactionRow({ transaction }: TransactionRowProps) {
+  const { deleteTransaction } = useFinanceStore();
   const isIncome = transaction.type === "income";
 
   return (
-    <div className="flex items-center gap-4 rounded-xl px-4 py-4 transition hover:bg-white/5">
-      {/* Category Icon */}
+    <div className="group flex items-center gap-4 rounded-xl px-4 py-4 transition hover:bg-white/5">
       <div className="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl bg-white/5 text-xl">
         {getCategoryIcon(transaction.category)}
       </div>
 
-      {/* Info */}
       <div className="min-w-0 flex-1">
         <div className="flex items-center gap-2">
           <p className="truncate text-sm font-semibold text-white">
@@ -45,15 +48,13 @@ export default function TransactionRow({ transaction }: TransactionRowProps) {
 
         <div className="mt-1 flex items-center gap-2 text-xs text-slate-400">
           <span>
-            {transaction.merchant ||
-              getCategoryLabel(transaction.category)}
+            {transaction.merchant || getCategoryLabel(transaction.category)}
           </span>
           <span>•</span>
           <span>{formatDate(transaction.date)}</span>
         </div>
       </div>
 
-      {/* Amount */}
       <div className="shrink-0 text-right">
         <p
           className={cn(
@@ -68,6 +69,14 @@ export default function TransactionRow({ transaction }: TransactionRowProps) {
           {getCategoryLabel(transaction.category)}
         </p>
       </div>
+
+      <button
+        onClick={() => deleteTransaction(transaction.id)}
+        className="shrink-0 rounded-lg p-2 text-slate-600 opacity-0 transition hover:bg-red-500/10 hover:text-red-400 group-hover:opacity-100"
+        title="Delete transaction"
+      >
+        <Trash2 className="h-4 w-4" />
+      </button>
     </div>
   );
 }
