@@ -1,12 +1,13 @@
 "use client";
 
 import { useState } from "react";
-import { Plus, Search } from "lucide-react";
+import { Download, Plus, Search } from "lucide-react";
 import TransactionRow from "@/components/transactions/TransactionRow";
 import AddTransactionForm from "@/components/transactions/AddTransactionForm";
 import Modal from "@/components/shared/Modal";
 import AnimatedPage from "@/components/shared/AnimatedPage";
 import { useFinanceStore } from "@/store/useFinanceStore";
+import { exportTransactionsToCsv } from "@/lib/exportTransactionsToCsv";
 
 const categories = [
   { value: "all", label: "All Categories" },
@@ -55,13 +56,28 @@ export default function TransactionsPage() {
             </p>
           </div>
 
-          <button
-            onClick={() => setIsModalOpen(true)}
-            className="inline-flex items-center gap-2 rounded-xl bg-blue-600 px-4 py-2.5 text-sm font-medium text-white transition hover:bg-blue-500"
-          >
-            <Plus className="h-4 w-4" />
-            Add Transaction
-          </button>
+          <div className="flex flex-col gap-3 sm:flex-row">
+            <button
+              onClick={() =>
+                exportTransactionsToCsv(
+                  filtered,
+                  "finance-flow-transactions"
+                )
+              }
+              className="inline-flex items-center justify-center gap-2 rounded-xl border border-white/10 bg-white/5 px-4 py-2.5 text-sm font-medium text-slate-200 transition hover:bg-white/10"
+            >
+              <Download className="h-4 w-4" />
+              Export CSV
+            </button>
+
+            <button
+              onClick={() => setIsModalOpen(true)}
+              className="inline-flex items-center justify-center gap-2 rounded-xl bg-blue-600 px-4 py-2.5 text-sm font-medium text-white transition hover:bg-blue-500"
+            >
+              <Plus className="h-4 w-4" />
+              Add Transaction
+            </button>
+          </div>
         </div>
 
         {/* Filters */}
