@@ -1,11 +1,13 @@
 "use client";
 
 import { useState } from "react";
-import { Download, Plus, Search } from "lucide-react";
+import { Download, Plus, Search, ArrowLeftRight } from "lucide-react";
 import TransactionRow from "@/components/transactions/TransactionRow";
 import AddTransactionForm from "@/components/transactions/AddTransactionForm";
 import Modal from "@/components/shared/Modal";
 import AnimatedPage from "@/components/shared/AnimatedPage";
+import EmptyState from "@/components/shared/EmptyState";
+import Toast from "@/components/shared/Toast";
 import { useFinanceStore } from "@/store/useFinanceStore";
 import { exportTransactionsToCsv } from "@/lib/exportTransactionsToCsv";
 
@@ -31,6 +33,8 @@ const types = [
 
 export default function TransactionsPage() {
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [toastMessage, setToastMessage] = useState("");
+  const [showToast, setShowToast] = useState(false);
 
   const {
     searchQuery,
@@ -43,6 +47,18 @@ export default function TransactionsPage() {
   } = useFinanceStore();
 
   const filtered = getFilteredTransactions();
+
+  function handleTransactionAdded() {
+    setIsModalOpen(false);
+    setToastMessage("Transaction added successfully");
+    setShowToast(true);
+  }
+
+  function handleExport() {
+    exportTransactionsToCsv(filtered, "finance-flow-transactions");
+    setToastMessage("Transactions exported as CSV");
+    setShowToast(true);
+  }
 
   return (
     <AnimatedPage>
@@ -58,13 +74,9 @@ export default function TransactionsPage() {
 
           <div className="flex flex-col gap-3 sm:flex-row">
             <button
-              onClick={() =>
-                exportTransactionsToCsv(
-                  filtered,
-                  "finance-flow-transactions"
-                )
-              }
-              className="inline-flex items-center justify-center gap-2 rounded-xl border border-white/10 bg-white/5 px-4 py-2.5 text-sm font-medium text-slate-200 transition hover:bg-white/10"
+              onClick={handleExport}
+              disabled={filtered.length === 0}
+              className="inline-flex items-center justify-center gap-2 rounded-xl border border-white/10 bg-white/5 px-4 py-2.5 text-sm font-medium text-slate-200 transition hover:bg-white/10 disabled:cursor-not-allowed disabled:opacity-40"
             >
               <Download className="h-4 w-4" />
               Export CSV
@@ -132,22 +144,31 @@ export default function TransactionsPage() {
                 <TransactionRow key={t.id} transaction={t} />
               ))
             ) : (
-              <div className="px-5 py-12 text-center text-sm text-slate-400">
-                No transactions match your filters.
-              </div>
+              <EmptyState
+                icon={ArrowLeftRight}
+                title="No transactions found"
+                description="Try adjusting your search or filters. You can also add a new transaction."
+              />
             )}
           </div>
         </div>
       </div>
 
-      {/* Add Transaction Modal */}
+      {/* Modal */}
       <Modal
         isOpen={isModalOpen}
         onClose={() => setIsModalOpen(false)}
         title="Add Transaction"
       >
-        <AddTransactionForm onClose={() => setIsModalOpen(false)} />
+        <AddTransactionForm onClose={handleTransactionAdded} />
       </Modal>
+
+      {/* Toast */}
+      <Toast
+        message={toastMessage}
+        isVisible={showToast}
+        onClose={() => setShowToast(false)}
+      />
     </AnimatedPage>
   );
 }

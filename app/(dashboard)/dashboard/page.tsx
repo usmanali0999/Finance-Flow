@@ -14,11 +14,12 @@ import BudgetCard from "@/components/dashboard/BudgetCard";
 import TransactionRow from "@/components/transactions/TransactionRow";
 import IncomeExpenseChart from "@/components/charts/IncomeExpenseChart";
 import SpendingBreakdownChart from "@/components/charts/SpendingBreakdownChart";
+import AnimatedPage from "@/components/shared/AnimatedPage";
+import StoreProvider from "@/components/shared/StoreProvider";
 import { formatCurrency } from "@/lib/utils";
 import { useFinanceStore } from "@/store/useFinanceStore";
-import AnimatedPage from "@/components/shared/AnimatedPage";
 
-export default function DashboardPage() {
+function DashboardContent() {
   const {
     accounts,
     budgets,
@@ -73,13 +74,12 @@ export default function DashboardPage() {
   ];
 
   return (
-        <AnimatedPage>
-
     <div className="mx-auto max-w-7xl space-y-8">
       <div>
         <h1 className="text-3xl font-bold">Dashboard Overview</h1>
         <p className="mt-2 text-sm text-slate-400">
-          Monitor balances, monthly trends, category distribution, and recent activity.
+          Monitor balances, monthly trends, category distribution, and recent
+          activity.
         </p>
       </div>
 
@@ -92,7 +92,9 @@ export default function DashboardPage() {
       <div className="grid gap-6 xl:grid-cols-3">
         <section className="rounded-2xl border border-white/10 bg-slate-900/60 p-5 xl:col-span-2">
           <div className="mb-5">
-            <h2 className="text-lg font-semibold">Income, Expenses & Savings</h2>
+            <h2 className="text-lg font-semibold">
+              Income, Expenses & Savings
+            </h2>
             <p className="text-sm text-slate-400">6 month financial overview</p>
           </div>
           <IncomeExpenseChart />
@@ -166,6 +168,15 @@ export default function DashboardPage() {
         </div>
       </section>
     </div>
-      </AnimatedPage>
+  );
+}
+
+export default function DashboardPage() {
+  return (
+    <AnimatedPage>
+      <StoreProvider>
+        <DashboardContent />
+      </StoreProvider>
+    </AnimatedPage>
   );
 }

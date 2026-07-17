@@ -1,11 +1,12 @@
 "use client";
 
 import BudgetCard from "@/components/dashboard/BudgetCard";
+import AnimatedPage from "@/components/shared/AnimatedPage";
+import StoreProvider from "@/components/shared/StoreProvider";
 import { calculatePercentage, formatCurrency } from "@/lib/utils";
 import { useFinanceStore } from "@/store/useFinanceStore";
-import AnimatedPage from "@/components/shared/AnimatedPage";
 
-export default function BudgetsPage() {
+function BudgetsContent() {
   const { budgets } = useFinanceStore();
 
   const totalLimit = budgets.reduce((s, b) => s + b.limit, 0);
@@ -14,8 +15,6 @@ export default function BudgetsPage() {
   const usage = calculatePercentage(totalSpent, totalLimit);
 
   return (
-        <AnimatedPage>
-
     <div className="mx-auto max-w-7xl space-y-6">
       <div>
         <h1 className="text-3xl font-bold">Budgets</h1>
@@ -24,7 +23,6 @@ export default function BudgetsPage() {
         </p>
       </div>
 
-      {/* Summary */}
       <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
         <div className="rounded-2xl border border-white/10 bg-slate-900/60 p-5">
           <p className="text-sm text-slate-400">Total Budget</p>
@@ -50,7 +48,6 @@ export default function BudgetsPage() {
         </div>
       </div>
 
-      {/* Overall progress */}
       <div className="rounded-2xl border border-white/10 bg-slate-900/60 p-5">
         <div className="mb-2 flex items-center justify-between text-sm text-slate-400">
           <span>Overall spending progress</span>
@@ -64,14 +61,21 @@ export default function BudgetsPage() {
         </div>
       </div>
 
-      {/* Cards */}
       <div className="grid gap-4 md:grid-cols-2 xl:grid-cols-3">
         {budgets.map((b) => (
           <BudgetCard key={b.id} budget={b} />
         ))}
       </div>
     </div>
-        </AnimatedPage>
+  );
+}
 
+export default function BudgetsPage() {
+  return (
+    <AnimatedPage>
+      <StoreProvider>
+        <BudgetsContent />
+      </StoreProvider>
+    </AnimatedPage>
   );
 }
